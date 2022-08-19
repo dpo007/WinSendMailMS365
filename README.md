@@ -1,13 +1,12 @@
 # WinSendMailMS365
 Basic [Sendmail](https://linux.die.net/man/8/sendmail.sendmail) replacement for Windows, written in C#.
 
-Takes raw email fed via Console/StdIn, and sends it via (authenticated) SMTP.
+Takes raw email fed via Console/StdIn, and sends it via MS365's Graph API using modern authentication methods.
 
-Initial intended usage is with a IIS, PHP and Exchange setup of Drupal (all on-prem).
+Initial intended usage is with a IIS, PHP and a setup of Drupal (all on-prem).
 
-Written because existing "Fake Sendmail" applications for Windows were lacking (mainly in the area of error trapping/logging), and I needed to debug why certain emails were not sending.
+Based off my previous WinSendMail SMTP sender.
 
-For my case, it was quicker to just write it than to keep finding/trying various (old-as-dirt) replacements.
-
-* Depends on MimeKit and MailKit packages.
+* Depends on MimeKitLite, Microsoft Graph, and Azure Identity packages (and their dependencies).
 * Currently targets .Net Framework 4.7.2.
+

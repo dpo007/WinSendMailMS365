@@ -21,7 +21,7 @@ namespace WinSendMailMS365
             return stream;
         }
 
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             string rawEmail = null;
             string line;
@@ -54,20 +54,20 @@ namespace WinSendMailMS365
             string clientSecret = Properties.Settings.Default.MS365ClientSecret;
 
             // using Azure.Identity;
-            TokenCredentialOptions options = new TokenCredentialOptions
+            TokenCredentialOptions credentialOptions = new TokenCredentialOptions
             {
                 AuthorityHost = AzureAuthorityHosts.AzurePublicCloud
             };
 
             // https://docs.microsoft.com/dotnet/api/azure.identity.clientsecretcredential
             ClientSecretCredential clientSecretCredential = new ClientSecretCredential(
-                tenantId, clientId, clientSecret, options);
+                tenantId, clientId, clientSecret, credentialOptions);
 
             string[] scopes = new[] { "https://graph.microsoft.com/.default" };
             GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, scopes);
 
             // Define email to send via Graph API.
-            Recipient sender = new Recipient
+            Recipient emailSender = new Recipient
             {
                 EmailAddress = new EmailAddress
                 {
@@ -75,7 +75,7 @@ namespace WinSendMailMS365
                 }
             };
 
-            Recipient from = new Recipient
+            Recipient emailFrom = new Recipient
             {
                 EmailAddress = new EmailAddress
                 {
@@ -83,7 +83,7 @@ namespace WinSendMailMS365
                 }
             };
 
-            List<Recipient> recipients = new List<Recipient>();
+            List<Recipient> emailRecipients = new List<Recipient>();
             foreach (InternetAddress address in mimeEmailMsg.To)
             {
                 Recipient recipient = new Recipient
@@ -94,47 +94,47 @@ namespace WinSendMailMS365
                     }
                 };
 
-                recipients.Add(recipient);
+                emailRecipients.Add(recipient);
             }
 
             // Prep email Body.
-            string preppedBodyContent;
+            string emailBodyContent;
             if (Properties.Settings.Default.HTMLDecodeContent)
             {
                 // Decode HTML content.
-                preppedBodyContent = WebUtility.HtmlDecode(mimeEmailMsg.GetTextBody(MimeKit.Text.TextFormat.Plain));
+                emailBodyContent = WebUtility.HtmlDecode(mimeEmailMsg.GetTextBody(MimeKit.Text.TextFormat.Plain));
             }
             else
             {
                 // Do not decode HTML content.
-                preppedBodyContent = mimeEmailMsg.GetTextBody(MimeKit.Text.TextFormat.Plain);
+                emailBodyContent = mimeEmailMsg.GetTextBody(MimeKit.Text.TextFormat.Plain);
             }
 
             // Prep email Subject.
-            string preppedSubject;
+            string emailSubject;
             if (Properties.Settings.Default.HTMLDecodeContent)
             {
                 // Decode HTML content.
-                preppedSubject = WebUtility.HtmlDecode(mimeEmailMsg.Subject);
+                emailSubject = WebUtility.HtmlDecode(mimeEmailMsg.Subject);
             }
             else
             {
                 // Do not decode HTML content.
-                preppedSubject = mimeEmailMsg.Subject;
+                emailSubject = mimeEmailMsg.Subject;
             }
 
             // Assemble email message.
-            Message message = new Message
+            Message emailMessage = new Message
             {
-                Subject = preppedSubject,
+                Subject = emailSubject,
                 Body = new ItemBody
                 {
                     ContentType = BodyType.Text,
-                    Content = preppedBodyContent
+                    Content = emailBodyContent
                 },
-                ToRecipients = recipients,
-                Sender = sender,
-                From = from
+                ToRecipients = emailRecipients,
+                Sender = emailSender,
+                From = emailFrom
             };
 
             // Get ID of user who we'll send mail as.
@@ -146,7 +146,7 @@ namespace WinSendMailMS365
 
             // Send the email.
             await graphClient.Users[user.Id]
-                .SendMail(message, false)
+                .SendMail(emailMessage, false)
                 .Request()
                 .PostAsync();
         }
