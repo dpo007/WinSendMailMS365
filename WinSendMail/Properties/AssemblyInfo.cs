@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Cantankerous Apparatus")]
 [assembly: AssemblyProduct("WinSendMailMS365")]
-[assembly: AssemblyCopyright("Copyright © 2019 - Cantankerous Apparatus")]
+[assembly: AssemblyCopyright("Copyright © 2022 - Cantankerous Apparatus")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.42.0.0")]
-[assembly: AssemblyFileVersion("1.42.0.0")]
+[assembly: AssemblyVersion("2.42.0.0")]
+[assembly: AssemblyFileVersion("2.42.0.0")]
 [assembly: NeutralResourcesLanguage("en-CA")]
