@@ -17,6 +17,7 @@ namespace WinSendMailMS365
             string rawEmail = null;
             string line;
 
+            // Load application settings from file.
             AppSettings appSettings = LoadAppSettings();
 
             // Read from console/stdin until "Ctrl-Z"...
