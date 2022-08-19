@@ -22,59 +22,5 @@ namespace WinSendMailMS365.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SaveEmailsToDisk {
-            get {
-                return ((bool)(this["SaveEmailsToDisk"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("user@yourdomain.com")]
-        public string MS365UserName {
-            get {
-                return ((string)(this["MS365UserName"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MS365TenantID")]
-        public string MS365TenantID {
-            get {
-                return ((string)(this["MS365TenantID"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("AppClientID")]
-        public string MS365ClientID {
-            get {
-                return ((string)(this["MS365ClientID"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("AppClientSecret")]
-        public string MS365ClientSecret {
-            get {
-                return ((string)(this["MS365ClientSecret"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool HTMLDecodeContent {
-            get {
-                return ((bool)(this["HTMLDecodeContent"]));
-            }
-        }
     }
 }

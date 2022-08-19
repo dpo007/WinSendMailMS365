@@ -338,6 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/WinSendMail/Keys.txt
-/WinSendMail/App.config
-/WinSendMail/MainstreetSettings.config
+/WinSendMail/AppSettings.json
