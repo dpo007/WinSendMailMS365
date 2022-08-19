@@ -12,21 +12,6 @@ namespace WinSendMailMS365
 {
     internal class WinSendMailMS365
     {
-        private static Stream GenerateStreamFromString(string s)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write(s);
-                    writer.Flush();
-                }
-
-                stream.Position = 0;
-                return stream;
-            }
-        }
-
         private static async Task Main()
         {
             string rawEmail = null;
@@ -119,6 +104,26 @@ namespace WinSendMailMS365
                     LogError($"Problem sending email.  Error: {ex.Message}");
                     throw;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Create a stream from a string.
+        /// </summary>
+        /// <param name="s">String to generate stream from.</param>
+        /// <returns>Stream containing contents of input string.</returns>
+        private static Stream GenerateStreamFromString(string s)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(s);
+                    writer.Flush();
+                }
+
+                stream.Position = 0;
+                return stream;
             }
         }
 
