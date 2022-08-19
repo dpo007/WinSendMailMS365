@@ -41,24 +41,26 @@ namespace WinSendMailMS365
             _ = new MimeMessage();
             MimeMessage mimeEmailMsg = MimeMessage.Load(GenerateStreamFromString(rawEmail));
 
-            // Load MS365 App Integration info.
-            string tenantId = appSettings.MS365TenantID;
-            string clientId = appSettings.MS365ClientID;
-            string clientSecret = appSettings.MS365ClientSecret;
-
-            // using Azure.Identity;
+            // Set options to use for Azure.Identity credential.
             TokenCredentialOptions credentialOptions = new TokenCredentialOptions
             {
                 AuthorityHost = AzureAuthorityHosts.AzurePublicCloud
             };
 
+            // Create Azure.Identity 'Client Secret' credential (based on application settings).
             // https://docs.microsoft.com/dotnet/api/azure.identity.clientsecretcredential
             ClientSecretCredential clientSecretCredential = new ClientSecretCredential(
-                tenantId, clientId, clientSecret, credentialOptions);
+                appSettings.MS365TenantID,
+                appSettings.MS365ClientID,
+                appSettings.MS365ClientSecret,
+                credentialOptions);
 
             string[] scopes = new[] { "https://graph.microsoft.com/.default" };
-            GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, scopes);
-            
+            GraphServiceClient graphClient = new GraphServiceClient(
+                clientSecretCredential,
+                scopes);
+
+            // Create a new Graph message to send.
             Message emailMessage = CreateGraphEmailMessage(mimeEmailMsg, appSettings.HTMLDecodeContent);
 
             // Attempt to look up User via Graph API.
