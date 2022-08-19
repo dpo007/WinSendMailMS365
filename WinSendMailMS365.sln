@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinSendMailMS365", "WinSendMail\WinSendMailMS365.csproj", "{31BB89FF-66FD-431E-A084-8B3786A0E420}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31BB89FF-66FD-431E-A084-8B3786A0E420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BB89FF-66FD-431E-A084-8B3786A0E420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BB89FF-66FD-431E-A084-8B3786A0E420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BB89FF-66FD-431E-A084-8B3786A0E420}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2E08494-F316-42A4-B16A-8D2EEE74ED81}
+	EndGlobalSection
+EndGlobal
