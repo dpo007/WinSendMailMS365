@@ -240,8 +240,10 @@ namespace WinSendMailMS365
                 LogError("AppSettings.json file not found.  Created new file with default settings.  Please edit it and try again.");
 
                 // Exit program.
+#if DEBUG
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
+#endif
                 Environment.Exit(0);
             }
 
