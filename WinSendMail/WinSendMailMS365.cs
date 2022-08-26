@@ -12,6 +12,9 @@ namespace WinSendMailMS365
 {
     internal class WinSendMailMS365
     {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
         private static async Task Main()
         {
             string rawEmail = null;
