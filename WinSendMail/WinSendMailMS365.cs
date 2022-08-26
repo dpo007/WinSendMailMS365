@@ -39,8 +39,7 @@ namespace WinSendMailMS365
             }
 
             // Import raw email into a MimeMessage object.
-            _ = new MimeMessage();
-            MimeMessage mimeEmailMsg = MimeMessage.Load(GenerateStreamFromString(rawEmail));
+            MimeMessage mimeEmailMsg = GenerateMimeMsgFromString(rawEmail);
 
             // Set options to use for Azure.Identity credential.
             TokenCredentialOptions credentialOptions = new TokenCredentialOptions
@@ -111,23 +110,26 @@ namespace WinSendMailMS365
         }
 
         /// <summary>
-        /// Create a stream from a string.
+        /// Create a MimeMessage from a raw email string.
         /// </summary>
-        /// <param name="s">String to generate stream from.</param>
-        /// <returns>Stream containing contents of input string.</returns>
-        private static Stream GenerateStreamFromString(string s)
+        /// <param name="emailString">Raw email string to generate MimeMessage from.</param>
+        /// <returns>MimeMessage containing contents of input string.</returns>
+        private static MimeMessage GenerateMimeMsgFromString(string emailString)
         {
+            MimeMessage mimeEmailMsg = new MimeMessage();
+
             using (MemoryStream stream = new MemoryStream())
             {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    writer.Write(s);
+                    writer.Write(emailString);
                     writer.Flush();
+                    stream.Position = 0;
+                    mimeEmailMsg = MimeMessage.Load(stream);
                 }
-
-                stream.Position = 0;
-                return stream;
             }
+
+            return mimeEmailMsg;
         }
 
         /// <summary>
@@ -218,20 +220,21 @@ namespace WinSendMailMS365
         private static AppSettings LoadAppSettings()
         {
             // Create new AppSettings object.
-            AppSettings appSettings = new AppSettings();
+            AppSettings appSettings = new AppSettings
+            {
+                // Populate AppSettings object with default settings.
+                MS365TenantID = "Your TenantID",
+                MS365ClientID = "App ClientID",
+                MS365ClientSecret = "App ClientSecret",
+                MS365SendingUser = "sendingUser@yourcompany.com",
+                SaveEmailsToDisk = false,
+                HTMLDecodeContent = true
+            };
 
             // Check if AppSettings.json JSON file exists, create new file if it does not.
             if (!System.IO.File.Exists("AppSettings.json"))
             {
                 System.IO.File.Create("AppSettings.json").Dispose();
-
-                // Populate AppSettings object with default settings.
-                appSettings.MS365TenantID = "Your TenantID";
-                appSettings.MS365ClientID = "App ClientID";
-                appSettings.MS365ClientSecret = "App ClientSecret";
-                appSettings.MS365SendingUser = "sendingUser@yourcompany.com";
-                appSettings.SaveEmailsToDisk = false;
-                appSettings.HTMLDecodeContent = true;
 
                 // Serialize AppSettings to JSON, save to new config file.
                 string json = JsonConvert.SerializeObject(appSettings, Formatting.Indented);
@@ -239,15 +242,15 @@ namespace WinSendMailMS365
 
                 LogError("AppSettings.json file not found.  Created new file with default settings.  Please edit it and try again.");
 
-                // Exit program.
 #if DEBUG
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
 #endif
+                // Exit program.
                 Environment.Exit(0);
             }
 
-            // Deserialize AppSettings.json into AppSettings object.
+            // Load settings by deserializing AppSettings.json into an AppSettings object.
             string jsonConfig = System.IO.File.ReadAllText("AppSettings.json");
             appSettings = JsonConvert.DeserializeObject<AppSettings>(jsonConfig);
 
