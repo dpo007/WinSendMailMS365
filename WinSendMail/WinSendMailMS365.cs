@@ -36,7 +36,14 @@ namespace WinSendMailMS365
 
                 // Save the email to a file on disk.
                 string rndFileNamePart = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
-                StreamWriter streamWriter = new StreamWriter($"RawInput-{DateTime.Now:yyyyMMdd_HHmmss}-{rndFileNamePart}.txt");
+
+                // Create time-stamped name for this email save file.
+                var rawEmailFileName = $"RawInput-{DateTime.Now:yyyyMMdd_HHmmss}-{rndFileNamePart}.txt";
+                // Ensure it's in our app folder.
+                string[] paths = { @"AppContext.BaseDirectory", rawEmailFileName };
+                string rawEmailFileSavePath = Path.Combine(paths);
+
+                StreamWriter streamWriter = new StreamWriter(rawEmailFileSavePath);
                 streamWriter.Write(rawEmail);
                 streamWriter.Dispose();
             }
@@ -234,14 +241,18 @@ namespace WinSendMailMS365
                 HTMLDecodeContent = true
             };
 
+            // Ensure AppSettings file is in our app folder.
+            string[] paths = { @"AppContext.BaseDirectory", "AppSettings.json" };
+            string appSettingsFilePath = Path.Combine(paths);
+
             // Check if AppSettings.json JSON file exists, create new file if it does not.
-            if (!System.IO.File.Exists("AppSettings.json"))
+            if (!System.IO.File.Exists(appSettingsFilePath))
             {
-                System.IO.File.Create("AppSettings.json").Dispose();
+                System.IO.File.Create(appSettingsFilePath).Dispose();
 
                 // Serialize AppSettings to JSON, save to new config file.
                 string json = JsonConvert.SerializeObject(appSettings, Formatting.Indented);
-                System.IO.File.WriteAllText("AppSettings.json", json);
+                System.IO.File.WriteAllText(appSettingsFilePath, json);
 
                 LogError("AppSettings.json file not found.  Created new file with default settings.  Please edit it and try again.");
 
@@ -254,7 +265,7 @@ namespace WinSendMailMS365
             }
 
             // Load settings by deserializing AppSettings.json into an AppSettings object.
-            string jsonConfig = System.IO.File.ReadAllText("AppSettings.json");
+            string jsonConfig = System.IO.File.ReadAllText(appSettingsFilePath);
             appSettings = JsonConvert.DeserializeObject<AppSettings>(jsonConfig);
 
             // Return AppSettings object.
@@ -269,11 +280,14 @@ namespace WinSendMailMS365
         {
             // Build filename from today's date and time.
             string sendErrorLogFileName = $"SendError-{DateTime.Now:yyyy-MM-dd}.log";
+            // Ensure it's in our app folder.
+            string[] paths = { @"AppContext.BaseDirectory", sendErrorLogFileName };
+            string sendErrorLogFilePath = Path.Combine(paths);
 
             // Create log file if it doesn't exist.
-            if (!System.IO.File.Exists(sendErrorLogFileName))
+            if (!System.IO.File.Exists(sendErrorLogFilePath))
             {
-                System.IO.File.Create(sendErrorLogFileName).Dispose();
+                System.IO.File.Create(sendErrorLogFilePath).Dispose();
             }
 
             // Prefix error message with date/time.
@@ -283,7 +297,7 @@ namespace WinSendMailMS365
             Console.WriteLine(errorMessage);
 
             // Append error to log file.
-            System.IO.File.AppendAllText(sendErrorLogFileName, $"{errorMessage}{Environment.NewLine}");
+            System.IO.File.AppendAllText(sendErrorLogFilePath, $"{errorMessage}{Environment.NewLine}");
         }
     }
 }
