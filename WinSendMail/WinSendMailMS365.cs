@@ -40,7 +40,7 @@ namespace WinSendMailMS365
                 // Create time-stamped name for this email save file.
                 var rawEmailFileName = $"RawInput-{DateTime.Now:yyyyMMdd_HHmmss}-{rndFileNamePart}.txt";
                 // Ensure it's in our app folder.
-                string[] paths = { @"AppContext.BaseDirectory", rawEmailFileName };
+                string[] paths = { AppContext.BaseDirectory, rawEmailFileName };
                 string rawEmailFileSavePath = Path.Combine(paths);
 
                 StreamWriter streamWriter = new StreamWriter(rawEmailFileSavePath);
@@ -242,7 +242,7 @@ namespace WinSendMailMS365
             };
 
             // Ensure AppSettings file is in our app folder.
-            string[] paths = { @"AppContext.BaseDirectory", "AppSettings.json" };
+            string[] paths = { AppContext.BaseDirectory, "AppSettings.json" };
             string appSettingsFilePath = Path.Combine(paths);
 
             // Check if AppSettings.json JSON file exists, create new file if it does not.
@@ -281,7 +281,7 @@ namespace WinSendMailMS365
             // Build filename from today's date and time.
             string sendErrorLogFileName = $"SendError-{DateTime.Now:yyyy-MM-dd}.log";
             // Ensure it's in our app folder.
-            string[] paths = { @"AppContext.BaseDirectory", sendErrorLogFileName };
+            string[] paths = { AppContext.BaseDirectory, sendErrorLogFileName };
             string sendErrorLogFilePath = Path.Combine(paths);
 
             // Create log file if it doesn't exist.
