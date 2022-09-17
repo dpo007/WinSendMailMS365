@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WinSendMailMS365
@@ -71,7 +72,7 @@ namespace WinSendMailMS365
                 scopes);
 
             // Create a new Graph message to send.
-            Message emailMessage = CreateGraphEmailMessage(mimeEmailMsg, appSettings.HTMLDecodeContent);
+            Message emailMessage = CreateGraphEmailMessage(mimeEmailMsg, appSettings.HTMLDecodeContent, appSettings.RemoveDuplicateBlankLines);
 
             // Attempt to look up User via Graph API.
             string sendingUserUPN = appSettings.MS365SendingUser;
@@ -148,7 +149,7 @@ namespace WinSendMailMS365
         /// <param name="mimeEmailMsg">MimeMessage email object.</param>
         /// <param name="decodeHTML">Decode HTML in Subject and Body?</param>
         /// <returns>Crafted Graph email Message object</returns>
-        private static Message CreateGraphEmailMessage(MimeMessage mimeEmailMsg, bool decodeHTML)
+        private static Message CreateGraphEmailMessage(MimeMessage mimeEmailMsg, bool decodeHTML, bool removeDuplicateBlankLines)
         {
             Recipient emailSender = new Recipient
             {
@@ -191,6 +192,12 @@ namespace WinSendMailMS365
             {
                 // Do not decode HTML content.
                 emailBodyContent = mimeEmailMsg.GetTextBody(MimeKit.Text.TextFormat.Plain);
+            }
+
+            if (removeDuplicateBlankLines)
+            {
+                // Remove duplicate blank lines.
+                emailBodyContent = RemoveDuplicateBlankLines(emailBodyContent);
             }
 
             // Prep email Subject.
@@ -238,6 +245,7 @@ namespace WinSendMailMS365
                 MS365ClientSecret = "App ClientSecret",
                 MS365SendingUser = "sendingUser@yourcompany.com",
                 SaveEmailsToDisk = false,
+                RemoveDuplicateBlankLines = false,
                 HTMLDecodeContent = true
             };
 
@@ -298,6 +306,35 @@ namespace WinSendMailMS365
 
             // Append error to log file.
             System.IO.File.AppendAllText(sendErrorLogFilePath, $"{errorMessage}{Environment.NewLine}");
+        }
+
+        /// <summary>
+        /// Removes duplicate blank lines from a multi-line string.
+        /// </summary>
+        /// <param name="RawText">Raw text version of a multi-line string.</param>
+        /// <returns>String with duplicate blank lines replaced by a single blank line</returns>
+        private static string RemoveDuplicateBlankLines(string RawText)
+        {
+            // Replace "\r?\n\s\r?\n" in RawText with envrionment new line character
+            RawText = Regex.Replace(RawText, @"\r?\n\s\r?\n", Environment.NewLine);
+
+            // while $RawText matches "(\r?\n){2}" loop
+            while (Regex.IsMatch(RawText, @"(\r?\n){2}"))
+            {
+                // Replace "(\r?\n){2}" in RawText with "\r\n"
+                string replaced = Regex.Replace(RawText, @"(\r?\n){2}", Environment.NewLine);
+
+                if (Regex.IsMatch(replaced, @"(\r?\n){2}"))
+                {
+                    RawText = replaced;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return RawText;
         }
     }
 }
