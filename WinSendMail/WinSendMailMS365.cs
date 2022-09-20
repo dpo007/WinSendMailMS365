@@ -316,22 +316,12 @@ namespace WinSendMailMS365
         private static string RemoveDuplicateBlankLines(string RawText)
         {
             // Replace "\r?\n\s\r?\n" in RawText with envrionment new line character
-            RawText = Regex.Replace(RawText, @"\r?\n\s\r?\n", Environment.NewLine);
+            RawText = Regex.Replace(RawText, @"\r?\n\s\r?\n", Environment.NewLine + Environment.NewLine);
 
             // while $RawText matches "(\r?\n){2}" loop
-            while (Regex.IsMatch(RawText, @"(\r?\n){2}"))
+            while (Regex.IsMatch(RawText, @"(\r?\n){3}"))
             {
-                // Replace "(\r?\n){2}" in RawText with "\r\n"
-                string replaced = Regex.Replace(RawText, @"(\r?\n){2}", Environment.NewLine);
-
-                if (Regex.IsMatch(replaced, @"(\r?\n){2}"))
-                {
-                    RawText = replaced;
-                }
-                else
-                {
-                    break;
-                }
+                RawText = Regex.Replace(RawText, @"(\r?\n){3}", Environment.NewLine + Environment.NewLine);
             }
 
             return RawText;
